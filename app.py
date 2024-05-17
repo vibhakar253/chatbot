@@ -4,6 +4,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 # Initialize MongoDB
+
 client = MongoClient('mongodb+srv://aksvibhakar:GQL5HwDrLByP1NAR@chatbot-cluster.lm8pgnu.mongodb.net/?retryWrites=true&w=majority&appName=chatbot-cluster')
 db = client['ChatbotDatabase']
 users_collection = db['chatbot-collection']
