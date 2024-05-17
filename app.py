@@ -4,7 +4,6 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 # Initialize MongoDB
-
 client = MongoClient('mongodb+srv://aksvibhakar:vibhakaraks@chatbotcluster.v1hibdg.mongodb.net/?retryWrites=true&w=majority&appName=chatbotcluster')
 db = client['chatbotdatabase']
 collection = db['chatbotcollection']
@@ -25,22 +24,28 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     intent = req.get('queryResult').get('intent').get('displayName')
     parameters = req.get('queryResult').get('parameters')
-    session_id = req.get('session')  # Use session ID to keep track of conversations
+    session_id = req.get('session')
 
     if intent == 'Login_intent':
         return jsonify({"fulfillmentText": "Enter your email"})
-    if intent == 'Login_intent - email':
+
+    elif intent == 'Login_intent - email':
         email = parameters.get('email')
-        store_temp_data(session_id, 'email', email)
-        return jsonify({"fulfillmentText": "Enter your password"})
-    if intent == 'Login_intent - email - password':
+        if email:
+            store_temp_data(session_id, 'email', email)
+            return jsonify({"fulfillmentText": "Enter your password"})
+        else:
+            return jsonify({"fulfillmentText": "Please provide a valid email."})
+
+    elif intent == 'Login_intent - email - password':
         password = parameters.get('password')
         email = retrieve_temp_data(session_id, 'email')
-        if email:
+        if email and password:
             store_user_details(email, password)
             return jsonify({"fulfillmentText": "Your account has been registered."})
         else:
             return jsonify({"fulfillmentText": "Something went wrong. Please start over."})
+
     else:
         return jsonify({"fulfillmentText": "I don't understand. Please try again."})
 
