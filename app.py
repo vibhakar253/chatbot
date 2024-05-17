@@ -28,11 +28,11 @@ def webhook():
 
     if intent == 'Login_intent':
         return jsonify({"fulfillmentText": "Enter your email"})
-    elif intent == 'Login_intent - email':
+    if intent == 'Login_intent - email':
         email = parameters.get('email')
         store_temp_data(session_id, 'email', email)
         return jsonify({"fulfillmentText": "Enter your password"})
-    elif intent == 'Login_intent - email - password':
+    if intent == 'Login_intent - email - password':
         password = parameters.get('password')
         email = retrieve_temp_data(session_id, 'email')
         if email:
