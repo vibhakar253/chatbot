@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 # Initialize MongoDB
 
-client = MongoClient('mongodb+srv://aksvibhakar:GQL5HwDrLByP1NAR@chatbot-cluster.lm8pgnu.mongodb.net/?retryWrites=true&w=majority&appName=chatbot-cluster')
-db = client['ChatbotDatabase']
-users_collection = db['chatbot-collection']
+client = MongoClient('mongodb+srv://aksvibhakar:vibhakaraks@chatbotcluster.v1hibdg.mongodb.net/?retryWrites=true&w=majority&appName=chatbotcluster')
+db = client['chatbotdatabase']
+collection = db['chatbotcollection']
 
 # Temporary storage for session data (use a more robust solution for production)
 session_data = {}
@@ -45,7 +45,7 @@ def webhook():
         return jsonify({"fulfillmentText": "I don't understand. Please try again."})
 
 def store_user_details(email, password):
-    users_collection.insert_one({'email': email, 'password': password})
+    collection.insert_one({'email': email, 'password': password})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
