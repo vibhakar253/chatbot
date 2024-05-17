@@ -1,12 +1,14 @@
+import os
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 
 app = Flask(__name__)
 
 # Initialize MongoDB
-client = MongoClient('mongodb+srv://aksvibhakar:vibhakaraks@chatbotcluster.v1hibdg.mongodb.net/?retryWrites=true&w=majority&appName=chatbotcluster')
-db = client['chatbotdatabase']
-collection = db['chatbotcollection']
+mongo_uri = os.getenv('MONGO_URI')
+client = MongoClient(mongo_uri)
+db = client['chatbotdatabase']  # This will be created if it doesn't exist
+collection = db['chatbotcollection']  # This will be created if it doesn't exist
 
 # Temporary storage for session data (use a more robust solution for production)
 session_data = {}
@@ -45,7 +47,6 @@ def webhook():
             return jsonify({"fulfillmentText": "Your account has been registered."})
         else:
             return jsonify({"fulfillmentText": "Something went wrong. Please start over."})
-
     else:
         return jsonify({"fulfillmentText": "I don't understand. Please try again."})
 
