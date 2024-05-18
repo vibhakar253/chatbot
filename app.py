@@ -1,14 +1,24 @@
 import os
 from flask import Flask, request, jsonify
-from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 
-# Initialize MongoDB
-mongo_uri = os.getenv('MONGO_URI')
-client = MongoClient(mongo_uri)
-db = client['chatbotdatabase']  # This will be created if it doesn't exist
-collection = db['chatbotcollection']  # This will be created if it doesn't exist
+uri = "mongodb+srv://aksvibhakar:vibhakaraks@chatbotcluster.v1hibdg.mongodb.net/?retryWrites=true&w=majority&appName=chatbotcluster"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+db = client['chatbotdatabase']
+collection = db['chatbotcollection']
 
 # Temporary storage for session data (use a more robust solution for production)
 session_data = {}
