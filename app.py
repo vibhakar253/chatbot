@@ -7,10 +7,9 @@ app = Flask(__name__)
 
 uri = "mongodb+srv://aksvibhakar:vibhakaraks@chatbotcluster.v1hibdg.mongodb.net/?retryWrites=true&w=majority&appName=chatbotcluster"
 
-# Create a new client and connect to the server
+# Connecting to MongoDb
 client = MongoClient(uri, server_api=ServerApi('1'))
 
-# Send a ping to confirm a successful connection
 try:
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
@@ -20,7 +19,7 @@ except Exception as e:
 db = client['chatbotdatabase']
 collection = db['chatbotcollection']
 
-# Temporary storage for session data (use a more robust solution for production)
+# storing in MongoDb
 session_data = {}
 
 def store_temp_data(session_id, key, value):
@@ -30,6 +29,8 @@ def store_temp_data(session_id, key, value):
 
 def retrieve_temp_data(session_id, key):
     return session_data.get(session_id, {}).get(key, None)
+
+#connecting to Dialogflow webhook
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -55,10 +56,13 @@ def webhook():
         if email and password:
             store_user_details(email, password)
             return jsonify({"fulfillmentText": "Your account has been registered."})
+                 
         else:
             return jsonify({"fulfillmentText": "Something went wrong. Please start over."})
     else:
         return jsonify({"fulfillmentText": "I don't understand. Please try again."})
+
+#Pushing email and password into MongoDb
 
 def store_user_details(email, password):
     collection.insert_one({'email': email, 'password': password})
